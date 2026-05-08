@@ -2,6 +2,6 @@
 #include "graph.hpp"
 #include <vector>
 
-// Returns the MST edges via Kruskal's algorithm.
-// Uses Union-Find with union by rank + path compression.
+// Devuelve las aristas del Árbol de Expansión Mínima (MST) mediante el algoritmo de Kruskal.
+// Utiliza Union-Find con unión por rango + compresión de camino.
 std::vector<Edge> kruskal(Graph& g);
