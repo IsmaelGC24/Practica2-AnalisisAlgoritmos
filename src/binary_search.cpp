@@ -1,23 +1,23 @@
 #include "binary_search.hpp"
 
-// Array is sorted DESCENDING by tenure.
-// Standard binary search for exact match (tenure == k).
-// In a descending array: if arr[mid].tenure > k, the target is to the RIGHT (higher indices).
-//                        if arr[mid].tenure < k, the target is to the LEFT  (lower indices).
-//                        if arr[mid].tenure == k, found — return mid.
+// El arreglo está ordenado DESCENDENTEMENTE por antigüedad.
+// Búsqueda binaria estándar para una coincidencia exacta (antigüedad == k).
+// En un arreglo descendente: si arr[mid].tenure > k, el objetivo está a la DERECHA (índices más altos).
+//                        si arr[mid].tenure < k, el objetivo está a la IZQUIERDA (índices más bajos).
+//                        si arr[mid].tenure == k, encontrado — devuelve mid.
 
 int binarySearchExact(const std::vector<ServiceRequest>& arr, int left, int right, int k) {
-    if (left > right) return -1;          // base case: not found
+    if (left > right) return -1;          // Caso base: no encontrado
 
     int mid = left + (right - left) / 2;
 
     if (arr[mid].tenure == k) {
-        return mid;                        // found
+        return mid;                        // Encontrado
     } else if (arr[mid].tenure > k) {
-        // target is smaller → look in right half (lower tenure values)
+        // El objetivo es más pequeño → buscar en la mitad derecha (valores de antigüedad más bajos)
         return binarySearchExact(arr, mid + 1, right, k);
     } else {
-        // target is larger → look in left half (higher tenure values)
+        // El objetivo es más grande → buscar en la mitad izquierda (valores de antigüedad más altos)
         return binarySearchExact(arr, left, mid - 1, k);
     }
 }
