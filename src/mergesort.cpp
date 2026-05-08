@@ -7,7 +7,7 @@ static void merge(std::vector<ServiceRequest>& arr, int left, int mid, int right
 
     int i = 0, j = 0, k = left;
     while (i < (int)leftPart.size() && j < (int)rightPart.size()) {
-        // Descending: larger tenure first; stable (left wins ties)
+        // El arreglo está ordenado por antigüedad DESCENDENTE, así que comparamos con >=
         if (leftPart[i].tenure >= rightPart[j].tenure) {
             arr[k++] = leftPart[i++];
         } else {
