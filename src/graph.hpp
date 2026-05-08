@@ -2,26 +2,27 @@
 #include <vector>
 
 struct Edge {
-    int    u, v;
-    double weight;
-    bool operator<(const Edge& other) const { return weight < other.weight; }
+    int    u, v;          // Vértices que conecta la arista
+    double weight;        // Peso/costo de la arista
+    bool operator<(const Edge& other) const { return weight < other.weight; }  // Para ordenar por peso
 };
 
-// Union-Find with union by rank and path compression
+// Union-Find con unión por rango y compresión de camino
 struct UnionFind {
-    std::vector<int> parent, rank_;
+    std::vector<int> parent;   // Vector de padres
+    std::vector<int> rank_;    // Vector de rangos (para unión por rango)
     explicit UnionFind(int n);
-    int  find(int x);
-    bool unite(int x, int y); // returns true if they were in different sets
+    int  find(int x);          // Encuentra la raíz del conjunto de x (con compresión)
+    bool unite(int x, int y);  // Une los conjuntos de x e y, retorna true si estaban en diferentes conjuntos
 };
 
-// Weighted undirected graph
+// Grafo no dirigido ponderado
 struct Graph {
-    int               numNodes;
-    std::vector<Edge> edges;
-    void addEdge(int u, int v, double w);
+    int               numNodes;   // Número de nodos en el grafo
+    std::vector<Edge> edges;      // Lista de aristas
+    void addEdge(int u, int v, double w);  // Agrega una arista entre u y v con peso w
 };
 
-// Builds the deterministic telecom graph from group averages.
-// groupAvg[k] = average MonthlyCharges of group k (k = record_index mod 20).
+// Construye el grafo de telecomunicaciones determinístico a partir de los promedios por grupo.
+// groupAvg[k] = promedio de MonthlyCharges del grupo k (k = índice_del_registro mod 20).
 Graph buildTelecomGraph(const std::vector<double>& groupAvg);
