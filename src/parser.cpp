@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 
-// Split a CSV line respecting the fact that no field is quoted here
+// Dividir una línea CSV asumiendo que ningún campo está entre comillas aquí
 static std::vector<std::string> splitCSV(const std::string& line) {
     std::vector<std::string> fields;
     std::stringstream ss(line);
@@ -18,17 +18,17 @@ static std::vector<std::string> splitCSV(const std::string& line) {
 std::vector<ServiceRequest> parseCSV(const std::string& filepath, int& nullCount) {
     std::ifstream file(filepath);
     if (!file.is_open()) {
-        throw std::runtime_error("Cannot open file: " + filepath);
+        throw std::runtime_error("No se puede abrir el archivo: " + filepath);
     }
 
     std::vector<ServiceRequest> records;
     nullCount = 0;
     std::string line;
 
-    // Skip header
+    // Saltar la cabecera (primera línea)
     std::getline(file, line);
 
-    // Column indices (0-based) in the dataset:
+    // Índices de columnas (base 0) en el conjunto de datos:
     // 0  customerID
     // 1  gender
     // 2  SeniorCitizen
@@ -52,32 +52,34 @@ std::vector<ServiceRequest> parseCSV(const std::string& filepath, int& nullCount
     // 20 Churn
 
     while (std::getline(file, line)) {
-        if (line.empty()) continue;
+        if (line.empty()) continue;           // Saltar líneas vacías
         auto fields = splitCSV(line);
-        if (fields.size() < 21) continue;
+        if (fields.size() < 21) continue;     // Saltar líneas incompletas
 
         ServiceRequest req;
-        req.customerID = fields[0];
+        req.customerID = fields[0];            // Columna 0: ID del cliente
 
+        // Columna 5: tenure (antigüedad en meses)
         try { req.tenure = std::stoi(fields[5]); }
         catch (...) { req.tenure = 0; }
 
+        // Columna 18: monthlyCharges (cargo mensual)
         try { req.monthlyCharges = std::stod(fields[18]); }
         catch (...) { req.monthlyCharges = 0.0; }
 
-        // TotalCharges can be blank for tenure=0 customers
+        // TotalCharges puede estar vacío para clientes con tenure=0
         std::string tc = fields[19];
-        // trim whitespace
+        // Eliminar espacios en blanco al inicio y final
         size_t start = tc.find_first_not_of(" \t\r\n");
         if (start == std::string::npos || tc.empty()) {
-            req.totalCharges = 0.0;
-            nullCount++;
+            req.totalCharges = 0.0;            // Campo vacío o solo espacios
+            nullCount++;                       // Contar como nulo
         } else {
             try { req.totalCharges = std::stod(tc); }
             catch (...) { req.totalCharges = 0.0; nullCount++; }
         }
 
-        req.churn = (fields[20] == "Yes");
+        req.churn = (fields[20] == "Yes");     // Columna 20: Churn (abandono)
         records.push_back(req);
     }
 

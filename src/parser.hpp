@@ -3,12 +3,12 @@
 #include <vector>
 
 struct ServiceRequest {
-    std::string customerID;
-    int         tenure;
-    double      monthlyCharges;
-    double      totalCharges;
-    bool        churn; // true = Yes (at risk), false = No (active)
+    std::string customerID;    // ID del cliente
+    int         tenure;        // Antigüedad en meses
+    double      monthlyCharges; // Cargo mensual
+    double      totalCharges;   // Cargo total
+    bool        churn;          // true = Sí (en riesgo de abandono), false = No (activo)
 };
 
-// Loads records from CSV. Fills nullCount with number of blank TotalCharges.
+// Carga los registros desde un archivo CSV. Rellena nullCount con la cantidad de TotalCharges vacíos.
 std::vector<ServiceRequest> parseCSV(const std::string& filepath, int& nullCount);
