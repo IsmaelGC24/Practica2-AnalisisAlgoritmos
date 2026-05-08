@@ -3,11 +3,11 @@
 #include <vector>
 
 struct KnapsackResult {
-    int                             totalValue;  // optimal value (centavos)
-    std::vector<int>                selected;    // indices into the input items vector
+    int                             totalValue;  // Valor óptimo (en centavos)
+    std::vector<int>                selected;    // Índices dentro del vector original de elementos
 };
 
-// 0-1 Knapsack via tabulation.
-// items: vector of service requests (uses totalCharges as weight, monthlyCharges as value)
-// capacity: W in bandwidth units
+// Mochila 0-1 mediante tabulación.
+// items: vector de solicitudes de servicio (usa totalCharges como peso, monthlyCharges como valor)
+// capacity: W en unidades de ancho de banda
 KnapsackResult knapsack01(const std::vector<ServiceRequest>& items, int capacity);

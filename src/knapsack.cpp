@@ -6,39 +6,40 @@
 KnapsackResult knapsack01(const std::vector<ServiceRequest>& items, int capacity) {
     int n = (int)items.size();
 
-    // Convert to integer weights and values per spec:
-    // w_i = round(totalCharges)   [bandwidth units]
-    // v_i = round(monthlyCharges * 10) [centavos]
+    // Convertir a pesos y valores enteros según especificación:
+    // w_i = redondeo(totalCharges)   [unidades de ancho de banda]
+    // v_i = redondeo(monthlyCharges * 10) [centavos]
     std::vector<int> w(n), v(n);
     for (int i = 0; i < n; i++) {
         w[i] = (int)std::round(items[i].totalCharges);
         v[i] = (int)std::round(items[i].monthlyCharges * 10.0);
     }
 
-    // dp[i][c] = max value using first i items with capacity c
-    // Dimensions: (n+1) x (W+1)
+    // dp[i][c] = valor máximo usando los primeros i elementos con capacidad c
+    // Dimensiones: (n+1) x (capacidad+1)
     std::vector<std::vector<int>> dp(n + 1, std::vector<int>(capacity + 1, 0));
 
+    // Llenar la tabla de programación dinámica
     for (int i = 1; i <= n; i++) {
         for (int c = 0; c <= capacity; c++) {
-            dp[i][c] = dp[i - 1][c]; // don't take item i
-            if (w[i - 1] <= c) {
-                int take = dp[i - 1][c - w[i - 1]] + v[i - 1];
-                if (take > dp[i][c]) dp[i][c] = take;
+            dp[i][c] = dp[i - 1][c]; // No tomar el elemento i
+            if (w[i - 1] <= c) {     // Verificar si cabe el elemento i
+                int take = dp[i - 1][c - w[i - 1]] + v[i - 1]; // Valor si se toma
+                if (take > dp[i][c]) dp[i][c] = take;          // Quedarse con el mejor
             }
         }
     }
 
-    // Backtracking to recover selected items
+    // Retroceder para recuperar los elementos seleccionados
     std::vector<int> selected;
     int c = capacity;
     for (int i = n; i >= 1; i--) {
-        if (dp[i][c] != dp[i - 1][c]) {
-            selected.push_back(i - 1); // 0-based index into items
-            c -= w[i - 1];
+        if (dp[i][c] != dp[i - 1][c]) {  // El elemento i fue tomado
+            selected.push_back(i - 1);   // Índice en base 0 en el arreglo original
+            c -= w[i - 1];               // Reducir la capacidad restante
         }
     }
-    std::reverse(selected.begin(), selected.end());
+    std::reverse(selected.begin(), selected.end());  // Ordenar en orden original
 
-    return {dp[n][capacity], selected};
+    return {dp[n][capacity], selected};  // Devolver valor máximo y elementos seleccionados
 }
