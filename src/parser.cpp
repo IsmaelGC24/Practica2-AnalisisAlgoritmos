@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 
-// Dividir una línea CSV asumiendo que ningún campo está entre comillas aquí
+// Dividir una linea CSV asumiendo que ningun campo esta entre comillas aqui
 static std::vector<std::string> splitCSV(const std::string& line) {
     std::vector<std::string> fields;
     std::stringstream ss(line);
@@ -15,6 +15,7 @@ static std::vector<std::string> splitCSV(const std::string& line) {
     return fields;
 }
 
+// Parametros: filepath (ruta del archivo CSV), nullCount (referencia a contador de nulos)
 std::vector<ServiceRequest> parseCSV(const std::string& filepath, int& nullCount) {
     std::ifstream file(filepath);
     if (!file.is_open()) {

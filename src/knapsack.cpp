@@ -3,43 +3,56 @@
 #include <vector>
 #include <algorithm>
 
+// Parametros: items (vector de ServiceRequest), capacity (capacidad de la mochila)
 KnapsackResult knapsack01(const std::vector<ServiceRequest>& items, int capacity) {
+    // La mochila 0-1 significa que cada item se toma completo o no se toma, sin fracciones.
+    // Aqui se analiza la capacidad de la mochila y los pesos/valores de los items para decidir si llevar o no.
+    // El enfoque es Programacion Dinamica por tabulacion: llena una tabla con subproblemas para evitar recalculos.
+    // No es codicioso con paso greedy (no elige el mejor item primero), ni solo backtracking (es eficiente con tabla).
+
     int n = (int)items.size();
 
-    // Convertir a pesos y valores enteros según especificación:
-    // w_i = redondeo(totalCharges)   [unidades de ancho de banda]
-    // v_i = redondeo(monthlyCharges * 10) [centavos]
+    // Convertir datos a enteros: pesos de totalCharges, valores de monthlyCharges.
+    // Esto simplifica los calculos.
     std::vector<int> w(n), v(n);
     for (int i = 0; i < n; i++) {
         w[i] = (int)std::round(items[i].totalCharges);
         v[i] = (int)std::round(items[i].monthlyCharges * 10.0);
     }
 
-    // dp[i][c] = valor máximo usando los primeros i elementos con capacidad c
-    // Dimensiones: (n+1) x (capacidad+1)
+    // Tabla dp donde dp[i][c] es el valor maximo con primeros i items y capacidad c.
+    // Dimensiones: (n+1) x (capacidad+1), inicializada en 0.
     std::vector<std::vector<int>> dp(n + 1, std::vector<int>(capacity + 1, 0));
 
-    // Llenar la tabla de programación dinámica
+    // Llenar la tabla: para cada item y cada capacidad, decidir si tomar o no el item.
+    // Esto evidencia el enfoque de PD, resolviendo subproblemas de menor a mayor.
     for (int i = 1; i <= n; i++) {
         for (int c = 0; c <= capacity; c++) {
-            dp[i][c] = dp[i - 1][c]; // No tomar el elemento i
-            if (w[i - 1] <= c) {     // Verificar si cabe el elemento i
-                int take = dp[i - 1][c - w[i - 1]] + v[i - 1]; // Valor si se toma
-                if (take > dp[i][c]) dp[i][c] = take;          // Quedarse con el mejor
+            // Opcion 1: no tomar el item i, usar valor de dp[i-1][c].
+            dp[i][c] = dp[i - 1][c];
+            // Opcion 2: si cabe (w[i-1] <= c), calcular valor si se toma.
+            if (w[i - 1] <= c) {
+                int take = dp[i - 1][c - w[i - 1]] + v[i - 1];
+                // Elegir el maximo entre no tomar y tomar.
+                if (take > dp[i][c]) dp[i][c] = take;
             }
         }
     }
 
-    // Retroceder para recuperar los elementos seleccionados
+    // Retroceder en la tabla para encontrar que items se seleccionaron.
+    // Esto es backtracking sobre la tabla llena, no el algoritmo principal.
     std::vector<int> selected;
     int c = capacity;
     for (int i = n; i >= 1; i--) {
-        if (dp[i][c] != dp[i - 1][c]) {  // El elemento i fue tomado
-            selected.push_back(i - 1);   // Índice en base 0 en el arreglo original
-            c -= w[i - 1];               // Reducir la capacidad restante
+        // Si dp[i][c] > dp[i-1][c], el item i fue tomado.
+        if (dp[i][c] != dp[i - 1][c]) {
+            selected.push_back(i - 1);   // Agregar indice del item.
+            c -= w[i - 1];               // Reducir capacidad restante.
         }
     }
-    std::reverse(selected.begin(), selected.end());  // Ordenar en orden original
+    // Ordenar los indices en orden original.
+    std::reverse(selected.begin(), selected.end());
 
-    return {dp[n][capacity], selected};  // Devolver valor máximo y elementos seleccionados
+    // Devolver el resultado: valor maximo y lista de items seleccionados.
+    return {dp[n][capacity], selected};
 }

@@ -1,11 +1,12 @@
 #include <iostream>
+#include <vector>
+#include <string>
 #include <fstream>
 #include <iomanip>
 #include <chrono>
 #include <algorithm>
 #include <cmath>
 #include <numeric>
-#include <vector>
 
 #include "parser.hpp"
 #include "mergesort.hpp"
@@ -25,6 +26,7 @@ static void ensureResultsDir() {
 }
 
 // Retorna milisegundos transcurridos
+// Parametros: arr (vector de ServiceRequest)
 static double measureMergeSort(std::vector<ServiceRequest> arr) {
     auto t0 = std::chrono::high_resolution_clock::now();
     mergeSort(arr, 0, (int)arr.size() - 1);
@@ -34,6 +36,7 @@ static double measureMergeSort(std::vector<ServiceRequest> arr) {
 
 // Modulo A
 
+// Parametros: records (vector de ServiceRequest), nullCount (numero de nulos)
 static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
     std::cout << "\n=== MODULO A: Divide y Venceras ===\n";
     std::cout << "Total de registros cargados : " << records.size() << "\n";
@@ -110,6 +113,7 @@ static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
 
 // Modulo B
 
+// Parametros: groupAvg (vector de promedios por grupo)
 static void runModuleBWithAvg(const std::vector<double>& groupAvg) {
     std::cout << "\n=== MODULO B: Codicioso / MST con Kruskal ===\n";
 
@@ -177,6 +181,7 @@ static void runModuleBWithAvg(const std::vector<double>& groupAvg) {
 
 // Modulo C
 
+// Parametros: sortedRecords (vector ordenado de ServiceRequest)
 static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     std::cout << "\n=== MODULO C: Programacion Dinamica / Mochila 0-1 ===\n";
 
