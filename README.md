@@ -6,6 +6,14 @@ Optimización de rutas y planificación de recursos en redes de telecomunicacion
 
 ---
 
+## Integrantes
+
+David
+Daniel
+Ismael García Ceballos
+
+---
+
 ## Descripción
 
 Pipeline de tres módulos sobre el dataset *Telecom Customer Churn* (7 043 registros):
@@ -74,15 +82,3 @@ Licencia: CC0 (dominio público)
 Archivo: `data/WA_Fn-UseC_-Telco-Customer-Churn.csv`
 
 ---
-
-## Integrantes
-
-David
-Daniel
-Ismael García Ceballos
-
----
-
-## About
-
-Group assignment — Operating Systems (Sistemas Operativos), EAFIT 2026-1.
