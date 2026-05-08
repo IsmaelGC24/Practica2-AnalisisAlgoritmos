@@ -1,0 +1,31 @@
+# Compiled binaries
+ada_pf.exe
+ada_pf
+*.o
+*.out
+
+# Results (generated at runtime)
+results/*.csv
+results/*.txt
+
+# Folder created by Windows mkdir -p bug
+-p/
+
+# ada_pf_asan
+git rm --cached ada_pf_asan
+
+# VS Code
+.vscode/
+
+# Debug/sanitizer builds
+ada_pf_dbg
+ada_pf_san
+ada_pf_debug
+core
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Mac
+.DS_Store
