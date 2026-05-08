@@ -1,12 +1,8 @@
-# ADA_PF — Práctica Final Integradora 2026/01
+# Práctica Final Integradora
 
-**Análisis y Diseño de Algoritmos — EAFIT**  
+**Análisis y Diseño de Algoritmos — EAFIT** 
+
 Optimización de rutas y planificación de recursos en redes de telecomunicaciones
-
----
-
-## Integrantes
-
 
 ---
 
@@ -78,3 +74,15 @@ Licencia: CC0 (dominio público)
 Archivo: `data/WA_Fn-UseC_-Telco-Customer-Churn.csv`
 
 ---
+
+## Integrantes
+
+David
+Daniel
+Ismael García Ceballos
+
+---
+
+## About
+
+Group assignment — Operating Systems (Sistemas Operativos), EAFIT 2026-1.
