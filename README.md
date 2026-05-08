@@ -9,7 +9,9 @@ Optimización de rutas y planificación de recursos en redes de telecomunicacion
 ## Integrantes
 
 David
+
 Daniel
+
 Ismael García Ceballos
 
 ---
