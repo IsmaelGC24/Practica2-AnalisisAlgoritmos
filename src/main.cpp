@@ -90,7 +90,7 @@ static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
     std::string labels[] = {"Q_A01", "Q_A02", "Q_A03", "Q_A04", "Q_A05"};
 
     std::ofstream bOut("results/busquedas_A.txt");
-    bOut << "Resultados de busqueda binaria recursiva (coincidencia exacta: tenure == k):\n";
+    bOut << "Resultados de busqueda binaria recursiva (primera solicitud con tenure >= k):\n";
     bOut << std::left << std::setw(8)  << "Consulta"
         << std::setw(6)  << "k"
         << std::setw(15) << "customerID"
@@ -99,7 +99,7 @@ static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
 
     std::cout << "\n--- Consultas de Busqueda Binaria ---\n";
     for (int i = 0; i < 5; i++) {
-        int idx = binarySearchExact(records, 0, (int)records.size() - 1, queries[i]);
+        int idx = binarySearchFirstGreaterOrEqual(records, 0, (int)records.size() - 1, queries[i]);
         std::string cid = (idx == -1) ? "NO ENCONTRADO" : records[idx].customerID;
         int ten = (idx == -1) ? -1 : records[idx].tenure;
         bOut << std::setw(8)  << labels[i]
@@ -195,7 +195,7 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     }
     std::cout << "Solicitudes seleccionadas (Churn=No, mayor tenure): " << top50.size() << "\n";
 
-    const int W = 50000;
+    const int W = 500;
     KnapsackResult res = knapsack01(top50, W);
 
     std::cout << "Valor optimo: " << res.totalValue << " centavos\n";
@@ -252,9 +252,8 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     std::ofstream out("results/asignacion_bw.txt");
     out << "=== MODULO C: Mochila 0-1 - Asignacion de Ancho de Banda ===\n\n";
     out << "Capacidad W = " << W << " unidades de ancho de banda\n";
-    out << "Nota: w_i = round(TotalCharges). Los datos reales dan w_i en [1363, 8468],\n";
-    out << "      por lo que W se ajusto a 50000 (~8x la media de pesos) para obtener\n";
-    out << "      una seleccion significativa de ~10 items.\n";
+    out << "Nota: w_i = round(TotalCharges), v_i = round(MonthlyCharges * 10).\n";
+    out << "      Estas son las definiciones del PDF y se usan en el knapsack.\n";
     out << "Items: top 50 solicitudes activas por tenure\n\n";
 
     out << "--- Solucion Optima (Programacion Dinamica) ---\n";
