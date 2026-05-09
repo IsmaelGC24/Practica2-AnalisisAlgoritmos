@@ -41,7 +41,8 @@ En terminales Bash (Linux, macOS, Git Bash):
 ```bash
 g++ -std=c++17 -O2 -o ada_pf src/*.cpp
 ```
-
+---
+## Para Windows 
 En Windows (PowerShell / CMD con MinGW), se recomienda ser explícito con los archivos:
 ```powershell
 g++ -std=c++17 -O2 -o ada_pf.exe src/main.cpp src/parser.cpp src/mergesort.cpp src/binary_search.cpp src/graph.cpp src/kruskal.cpp src/knapsack.cpp
@@ -86,7 +87,7 @@ Para habilitar la evaluación real del algoritmo y demostrar el correcto funcion
 | tenure máximo | 72 |
 | tenure mínimo | 0 |
 ---
-
+Si al ejecutar el binario .exe en PowerShell obtiene un error de "Device Guard" o de directivas de seguridad, se recomienda ejecutar el programa desde la terminal de Símbolo del sistema
 ## Dataset
 
 Fuente: [Kaggle — Telco Customer Churn](https://www.kaggle.com/datasets/blastchar/telco-customer-churn)  
