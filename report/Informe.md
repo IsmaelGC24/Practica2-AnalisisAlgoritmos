@@ -367,11 +367,22 @@ Donde:
 - $b_i$ = variable binaria (tomar o no el item)
 
 **Recurrencia DP:**
-$$dp[i][c] = \begin{cases}
-0 & \text{si } i=0 \text{ o } c=0 \\
-dp[i-1][c] & \text{si } w_i > c \\
-\max(dp[i-1][c], \; dp[i-1][c-w_i] + v_i) & \text{si } w_i \leq c
-\end{cases}$$
+
+$$
+dp[i][c] = \begin{cases}
+  0 & \text{si } i=0 \text{ o } c=0 \\
+  dp[i-1][c] & \text{si } w_i > c \\
+  \max(dp[i-1][c], \, dp[i-1][c-w_i] + v_i) & \text{si } w_i \leq c
+\end{cases}
+$$
+
+**Forma alternativa claros:**
+
+Caso 1: Si $i=0$ o $c=0$ → $dp[i][c] = 0$ (casos base)
+
+Caso 2: Si $w_i > c$ (item no cabe) → $dp[i][c] = dp[i-1][c]$ (no se toma)
+
+Caso 3: Si $w_i \leq c$ (item cabe) → $dp[i][c] = \max(dp[i-1][c], \, dp[i-1][c-w_i] + v_i)$ (máximo entre tomar o no)
 
 **Interpretación:** $dp[i][c]$ = máximo valor usando los primeros $i$ items con capacidad $c$.
 
