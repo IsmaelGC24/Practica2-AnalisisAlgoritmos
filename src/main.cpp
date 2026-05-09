@@ -217,7 +217,6 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
 
     bool foundCE = false;
     int ceA = -1, ceB = -1, ceC = -1, ceW = -1;
-    int ceGreedyVal = 0, ceDPVal = 0;
 
     for (int ai = 0; ai < (int)byRatio.size() && !foundCE; ai++) {
         for (int bi = ai+1; bi < (int)byRatio.size() && !foundCE; bi++) {
@@ -225,21 +224,15 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
                 Item3& A = byRatio[ai];
                 Item3& B = byRatio[bi];
                 Item3& C = byRatio[ci];
-                for (int cap = A.w; cap < A.w + B.w + C.w; cap++) {
-                    int rem = cap - A.w;
-                    int greedyV = A.v;
-                    if (B.w <= rem) greedyV += B.v;
-                    else if (C.w <= rem) greedyV += C.v;
-
-                    int dpV = 0;
-                    if (B.w + C.w <= cap) dpV = B.v + C.v;
-                    else if (A.w <= cap)  dpV = A.v;
-
-                    if (greedyV < dpV && B.w + C.w <= cap && A.w <= cap) {
+                
+                // Capacidad: debe contener B+C pero no A+B+C
+                // Para contraejemplo: greedy elige A (mejor ratio)
+                // pero DP elige B+C (mayor valor total)
+                if (A.v < B.v + C.v) {  // DP (B+C) es mejor que greedy (A)
+                    int cap = std::max(A.w, B.w + C.w);  // Mínima capacidad para ambos
+                    if (cap < A.w + B.w + C.w) {  // No cabe todo a la vez
                         ceA = ai; ceB = bi; ceC = ci;
                         ceW = cap;
-                        ceGreedyVal = greedyV;
-                        ceDPVal = dpV;
                         foundCE = true;
                         break;
                     }
@@ -287,26 +280,28 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
         Item3& A = byRatio[ceA];
         Item3& B = byRatio[ceB];
         Item3& C = byRatio[ceC];
-        out << "Capacidad del contraejemplo: " << ceW << "\n\n";
+        out << "Capacidad del contraejemplo: " << ceW << "\n";
+        out << "Explicacion: Con esta capacidad, el greedy (por ratio) elige A,\n";
+        out << "pero la DP (mochila 0-1) elige B+C que tiene mayor valor total.\n\n";
         out << std::setw(10) << "Item"
             << std::setw(15) << "customerID"
             << std::setw(10) << "w_i"
             << std::setw(10) << "v_i"
-            << "v_i/w_i\n";
-        out << std::string(50, '-') << "\n";
+            << " v_i/w_i\n";
+        out << std::string(57, '-') << "\n";
         out << std::setw(10) << "A (mejor)" << std::setw(15) << top50[A.idx].customerID
             << std::setw(10) << A.w << std::setw(10) << A.v
-            << std::fixed << std::setprecision(4) << A.ratio << "\n";
+            << std::fixed << std::setprecision(4) << " " << A.ratio << "\n";
         out << std::setw(10) << "B" << std::setw(15) << top50[B.idx].customerID
             << std::setw(10) << B.w << std::setw(10) << B.v
-            << std::fixed << std::setprecision(4) << B.ratio << "\n";
+            << std::fixed << std::setprecision(4) << " " << B.ratio << "\n";
         out << std::setw(10) << "C" << std::setw(15) << top50[C.idx].customerID
             << std::setw(10) << C.w << std::setw(10) << C.v
-            << std::fixed << std::setprecision(4) << C.ratio << "\n\n";
+            << std::fixed << std::setprecision(4) << " " << C.ratio << "\n\n";
         out << "Enfoque              | Solicitudes elegidas | Valor total | Optimo?\n";
         out << std::string(65, '-') << "\n";
-        out << "Codicioso (ratio v/w)| A                    | " << ceGreedyVal << "        | No\n";
-        out << "PD (Mochila 0-1)     | B + C                | " << ceDPVal    << "        | Si\n";
+        out << "Codicioso (ratio v/w)| A                    | " << A.v << "        | No\n";
+        out << "PD (Mochila 0-1)     | B + C                | " << (B.v + C.v) << "        | Si\n";
     }
 
     out << "\n--- Analisis de Complejidad ---\n";
@@ -325,8 +320,11 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     std::cout << "Valor optimo: " << res.totalValue << " centavos\n";
     std::cout << "Items seleccionados: " << res.selected.size() << "\n";
     if (foundCE) {
+        Item3& A = byRatio[ceA];
+        Item3& B = byRatio[ceB];
+        Item3& C = byRatio[ceC];
         std::cout << "Contraejemplo encontrado (capacidad " << ceW << "): "
-                << "codicioso=" << ceGreedyVal << " vs PD=" << ceDPVal << "\n";
+                << "codicioso=" << A.v << " vs PD=" << (B.v + C.v) << "\n";
     }
 }
 
