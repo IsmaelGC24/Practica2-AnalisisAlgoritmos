@@ -40,6 +40,7 @@ Pipeline de tres módulos sobre el dataset *Telecom Customer Churn* (7 043 regis
 En terminales Bash (Linux, macOS, Git Bash):
 ```bash
 g++ -std=c++17 -O2 -o ada_pf src/*.cpp
+```
 
 En Windows (PowerShell / CMD con MinGW), se recomienda ser explícito con los archivos:
 ```powershell
@@ -53,7 +54,7 @@ En terminales Bash ejecutar:
 ```bash
 ./ada_pf data/WA_Fn-UseC_-Telco-Customer-Churn.csv
 ```
-
+---
 ### IMPORTANTE: INCONSISTENCIA MATEMÁTICA EN LA GUÍA Y JUSTIFICACIÓN DE INGENIERÍA (MÓDULO C): W=500
 
 Se requiere hacer una aclaración crítica respecto a la capacidad de la mochila asignada para el Módulo C. La guía de evaluación establece textualmente las siguientes métricas:
@@ -73,7 +74,7 @@ Por lo tanto, mantener la cota de capacidad de la mochila en **W = 500** hace qu
 Si se conserva W = 500, el algoritmo devuelve un resultado TOTALMENTE NULO (0 ítems, 0 valor), lo cual impide que el grafo resuelva el problema y oculta el rendimiento deseado de la Programación Dinámica. 
 
 Para habilitar la evaluación real del algoritmo y demostrar el correcto funcionamiento del *Backtracking* sobre la matriz, la capacidad fue **AJUSTADA a W = 50,000**. Esto permite que el sistema procese los datos reales y entregue una solución óptima verificable.
-
+---
 
 ## Valores de referencia esperados (Módulo A) para verificar el procesamiento adecuado
 
