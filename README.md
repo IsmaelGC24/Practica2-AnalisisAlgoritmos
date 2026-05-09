@@ -8,9 +8,9 @@ Optimización de rutas y planificación de recursos en redes de telecomunicacion
 
 ## Integrantes
 
-David
+David Rodriguez Espinosa 
 
-Daniel
+Daniel Mauricio Giraldo Moreno
 
 Ismael García Ceballos
 
@@ -33,32 +33,29 @@ Pipeline de tres módulos sobre el dataset *Telecom Customer Churn* (7 043 regis
 - Compilador: `g++` con soporte C++17
 - Sistema operativo: Linux, macOS o Windows (con MinGW/MSYS2)
 - No se requieren dependencias externas
-
 ---
 
 ## Compilación
 
+En terminales Bash (Linux, macOS, Git Bash):
 ```bash
-g++ -std=c++17 -O2 -o ada_pf src/main.cpp src/*.cpp
-```
+g++ -std=c++17 -O2 -o ada_pf src/*.cpp
 
-En Windows (PowerShell con MinGW):
+En Windows (PowerShell / CMD con MinGW), se recomienda ser explícito con los archivos:
 ```powershell
 g++ -std=c++17 -O2 -o ada_pf.exe src/main.cpp src/parser.cpp src/mergesort.cpp src/binary_search.cpp src/graph.cpp src/kruskal.cpp src/knapsack.cpp
 ```
 
 ---
 
-## Ejecución
-
+## Ahora para poder realizar la Ejecución correctamente 
+En terminales Bash ejecutar:
 ```bash
 ./ada_pf data/WA_Fn-UseC_-Telco-Customer-Churn.csv
 ```
 
 En Windows:
-```powershell
-.\ada_pf.exe data\WA_Fn-UseC_-Telco-Customer-Churn.csv
-```
+
 
 El programa genera automáticamente los cuatro archivos en `results/`.
 
