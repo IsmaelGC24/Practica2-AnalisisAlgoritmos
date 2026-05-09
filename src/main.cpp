@@ -195,7 +195,7 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     }
     std::cout << "Solicitudes seleccionadas (Churn=No, mayor tenure): " << top50.size() << "\n";
 
-    const int W = 500;
+    const int W = 50000;
     KnapsackResult res = knapsack01(top50, W);
 
     std::cout << "Valor optimo: " << res.totalValue << " centavos\n";
@@ -251,9 +251,10 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     // Escribir archivo de salida
     std::ofstream out("results/asignacion_bw.txt");
     out << "=== MODULO C: Mochila 0-1 - Asignacion de Ancho de Banda ===\n\n";
-    out << "Capacidad W = " << W << " unidades de ancho de banda\n";
+    out << "Hemos notado un problema de W en la guia, tomamos Capacidad W = " << W << " unidades de ancho de banda\n";
     out << "Nota: w_i = round(TotalCharges), v_i = round(MonthlyCharges * 10).\n";
-    out << "      Estas son las definiciones del PDF y se usan en el knapsack.\n";
+    out << "      Con los 50 primeros items activos, los pesos w_i estan en el orden de miles.\n";
+    out << "      Por eso se usa W = 50000 en lugar de W = 500 para obtener una solucion significativa.\n";
     out << "Items: top 50 solicitudes activas por tenure\n\n";
 
     out << "--- Solucion Optima (Programacion Dinamica) ---\n";
