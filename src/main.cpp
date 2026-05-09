@@ -16,7 +16,7 @@
 #include "knapsack.hpp"
 
 // Funciones auxiliares
-// Practica 2 - Daniel Giraldo, Ismael Garcia y David Rodriguez
+// Practica 2Daniel Giraldo, Ismael Garcia y David Rodriguez
 
 static void ensureResultsDir() {
 #ifdef _WIN32
@@ -92,24 +92,24 @@ static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
 
     std::ofstream bOut("results/busquedas_A.txt");
     bOut << "Resultados de busqueda binaria recursiva (primera solicitud con tenure >= k):\n";
-    bOut << std::left << std::setw(8)  << "Consulta"
-        << std::setw(6)  << "k"
-        << std::setw(15) << "customerID"
-        << "tenure\n";
-    bOut << std::string(45, '-') << "\n";
+bOut << std::left << std::setw(8)  << "Consulta"
+    << std::setw(6)  << "k"
+    << std::setw(15) << "customerID"
+    << "tenure\n";
+bOut << std::string(45, '-') << "\n";
 
-    std::cout << "\n--- Consultas de Busqueda Binaria ---\n";
-    for (int i = 0; i < 5; i++) {
-        int idx = binarySearchFirstGreaterOrEqual(records, 0, (int)records.size() - 1, queries[i]);
-        std::string cid = (idx == -1) ? "NO ENCONTRADO" : records[idx].customerID;
-        int ten = (idx == -1) ? -1 : records[idx].tenure;
-        bOut << std::setw(8)  << labels[i]
-            << std::setw(6)  << queries[i]
-            << std::setw(15) << cid << ten << "\n";
-        std::cout << labels[i] << " (k=" << queries[i] << "): " << cid
-                << " (tenure=" << ten << ")\n";
-    }
-    std::cout << "Escrito: results/busquedas_A.txt\n";
+std::cout << "\n--- Consultas de Busqueda Binaria ---\n";
+for (int i = 0; i < 5; i++) {
+    int idx = binarySearchExact(records, 0, (int)records.size() - 1, queries[i]);
+    std::string cid = (idx == -1) ? "NO ENCONTRADO" : records[idx].customerID;
+    int ten = (idx == -1) ? -1 : records[idx].tenure;
+    bOut << std::setw(8)  << labels[i]
+        << std::setw(6)  << queries[i]
+        << std::setw(15) << cid << ten << "\n";
+    std::cout << labels[i] << " (k=" << queries[i] << "): " << cid
+            << " (tenure=" << ten << ")\n";
+}
+std::cout << "Escrito: results/busquedas_A.txt\n";
 }
 
 // Modulo B
