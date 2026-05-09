@@ -16,6 +16,7 @@
 #include "knapsack.hpp"
 
 // Funciones auxiliares
+// Practica 2 - Daniel Giraldo, Ismael Garcia y David Rodriguez
 
 static void ensureResultsDir() {
 #ifdef _WIN32
