@@ -12,12 +12,12 @@ KnapsackResult knapsack01(const std::vector<ServiceRequest>& items, int capacity
 
     int n = (int)items.size();
 
-    // Convertir datos a enteros: pesos de totalCharges, valores de monthlyCharges.
-    // Esto simplifica los calculos.
+    // Convertir datos a enteros: pesos de totalCharges, valores de monthlyCharges*10.
+    // Esto sigue las definiciones del PDF: w_i = round(TotalCharges), v_i = round(MonthlyCharges * 10).
     std::vector<int> w(n), v(n);
     for (int i = 0; i < n; i++) {
-        w[i] = (int)std::round(items[i].totalCharges);
-        v[i] = (int)std::round(items[i].monthlyCharges * 10.0);
+        w[i] = (int) std::round(items[i].totalCharges);
+        v[i] = (int) std::round(items[i].monthlyCharges * 10.0);
     }
 
     // Tabla dp donde dp[i][c] es el valor maximo con primeros i items y capacidad c.

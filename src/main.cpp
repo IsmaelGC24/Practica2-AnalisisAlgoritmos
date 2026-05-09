@@ -16,6 +16,7 @@
 #include "knapsack.hpp"
 
 // Funciones auxiliares
+// Practica 2 - Daniel Giraldo, Ismael Garcia y David Rodriguez
 
 static void ensureResultsDir() {
 #ifdef _WIN32
@@ -90,7 +91,7 @@ static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
     std::string labels[] = {"Q_A01", "Q_A02", "Q_A03", "Q_A04", "Q_A05"};
 
     std::ofstream bOut("results/busquedas_A.txt");
-    bOut << "Resultados de busqueda binaria recursiva (coincidencia exacta: tenure == k):\n";
+    bOut << "Resultados de busqueda binaria recursiva (primera solicitud con tenure >= k):\n";
     bOut << std::left << std::setw(8)  << "Consulta"
         << std::setw(6)  << "k"
         << std::setw(15) << "customerID"
@@ -99,7 +100,7 @@ static void runModuleA(std::vector<ServiceRequest>& records, int nullCount) {
 
     std::cout << "\n--- Consultas de Busqueda Binaria ---\n";
     for (int i = 0; i < 5; i++) {
-        int idx = binarySearchExact(records, 0, (int)records.size() - 1, queries[i]);
+        int idx = binarySearchFirstGreaterOrEqual(records, 0, (int)records.size() - 1, queries[i]);
         std::string cid = (idx == -1) ? "NO ENCONTRADO" : records[idx].customerID;
         int ten = (idx == -1) ? -1 : records[idx].tenure;
         bOut << std::setw(8)  << labels[i]
@@ -217,7 +218,6 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
 
     bool foundCE = false;
     int ceA = -1, ceB = -1, ceC = -1, ceW = -1;
-    int ceGreedyVal = 0, ceDPVal = 0;
 
     for (int ai = 0; ai < (int)byRatio.size() && !foundCE; ai++) {
         for (int bi = ai+1; bi < (int)byRatio.size() && !foundCE; bi++) {
@@ -225,21 +225,15 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
                 Item3& A = byRatio[ai];
                 Item3& B = byRatio[bi];
                 Item3& C = byRatio[ci];
-                for (int cap = A.w; cap < A.w + B.w + C.w; cap++) {
-                    int rem = cap - A.w;
-                    int greedyV = A.v;
-                    if (B.w <= rem) greedyV += B.v;
-                    else if (C.w <= rem) greedyV += C.v;
-
-                    int dpV = 0;
-                    if (B.w + C.w <= cap) dpV = B.v + C.v;
-                    else if (A.w <= cap)  dpV = A.v;
-
-                    if (greedyV < dpV && B.w + C.w <= cap && A.w <= cap) {
+                
+                // Capacidad: debe contener B+C pero no A+B+C
+                // Para contraejemplo: greedy elige A (mejor ratio)
+                // pero DP elige B+C (mayor valor total)
+                if (A.v < B.v + C.v) {  // DP (B+C) es mejor que greedy (A)
+                    int cap = std::max(A.w, B.w + C.w);  // Mínima capacidad para ambos
+                    if (cap < A.w + B.w + C.w) {  // No cabe todo a la vez
                         ceA = ai; ceB = bi; ceC = ci;
                         ceW = cap;
-                        ceGreedyVal = greedyV;
-                        ceDPVal = dpV;
                         foundCE = true;
                         break;
                     }
@@ -251,10 +245,10 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     // Escribir archivo de salida
     std::ofstream out("results/asignacion_bw.txt");
     out << "=== MODULO C: Mochila 0-1 - Asignacion de Ancho de Banda ===\n\n";
-    out << "Capacidad W = " << W << " unidades de ancho de banda\n";
-    out << "Nota: w_i = round(TotalCharges). Los datos reales dan w_i en [1363, 8468],\n";
-    out << "      por lo que W se ajusto a 50000 (~8x la media de pesos) para obtener\n";
-    out << "      una seleccion significativa de ~10 items.\n";
+    out << "Hemos notado un problema de W en la guia, tomamos Capacidad W = " << W << " unidades de ancho de banda\n";
+    out << "Nota: w_i = round(TotalCharges), v_i = round(MonthlyCharges * 10).\n";
+    out << "      Con los 50 primeros items activos, los pesos w_i estan en el orden de miles.\n";
+    out << "      Por eso se usa W = 50000 en lugar de W = 500 para obtener una solucion significativa.\n";
     out << "Items: top 50 solicitudes activas por tenure\n\n";
 
     out << "--- Solucion Optima (Programacion Dinamica) ---\n";
@@ -287,26 +281,28 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
         Item3& A = byRatio[ceA];
         Item3& B = byRatio[ceB];
         Item3& C = byRatio[ceC];
-        out << "Capacidad del contraejemplo: " << ceW << "\n\n";
+        out << "Capacidad del contraejemplo: " << ceW << "\n";
+        out << "Explicacion: Con esta capacidad, el greedy (por ratio) elige A,\n";
+        out << "pero la DP (mochila 0-1) elige B+C que tiene mayor valor total.\n\n";
         out << std::setw(10) << "Item"
             << std::setw(15) << "customerID"
             << std::setw(10) << "w_i"
             << std::setw(10) << "v_i"
-            << "v_i/w_i\n";
-        out << std::string(50, '-') << "\n";
+            << " v_i/w_i\n";
+        out << std::string(57, '-') << "\n";
         out << std::setw(10) << "A (mejor)" << std::setw(15) << top50[A.idx].customerID
             << std::setw(10) << A.w << std::setw(10) << A.v
-            << std::fixed << std::setprecision(4) << A.ratio << "\n";
+            << std::fixed << std::setprecision(4) << " " << A.ratio << "\n";
         out << std::setw(10) << "B" << std::setw(15) << top50[B.idx].customerID
             << std::setw(10) << B.w << std::setw(10) << B.v
-            << std::fixed << std::setprecision(4) << B.ratio << "\n";
+            << std::fixed << std::setprecision(4) << " " << B.ratio << "\n";
         out << std::setw(10) << "C" << std::setw(15) << top50[C.idx].customerID
             << std::setw(10) << C.w << std::setw(10) << C.v
-            << std::fixed << std::setprecision(4) << C.ratio << "\n\n";
+            << std::fixed << std::setprecision(4) << " " << C.ratio << "\n\n";
         out << "Enfoque              | Solicitudes elegidas | Valor total | Optimo?\n";
         out << std::string(65, '-') << "\n";
-        out << "Codicioso (ratio v/w)| A                    | " << ceGreedyVal << "        | No\n";
-        out << "PD (Mochila 0-1)     | B + C                | " << ceDPVal    << "        | Si\n";
+        out << "Codicioso (ratio v/w)| A                    | " << A.v << "        | No\n";
+        out << "PD (Mochila 0-1)     | B + C                | " << (B.v + C.v) << "        | Si\n";
     }
 
     out << "\n--- Analisis de Complejidad ---\n";
@@ -325,8 +321,11 @@ static void runModuleC(const std::vector<ServiceRequest>& sortedRecords) {
     std::cout << "Valor optimo: " << res.totalValue << " centavos\n";
     std::cout << "Items seleccionados: " << res.selected.size() << "\n";
     if (foundCE) {
+        Item3& A = byRatio[ceA];
+        Item3& B = byRatio[ceB];
+        Item3& C = byRatio[ceC];
         std::cout << "Contraejemplo encontrado (capacidad " << ceW << "): "
-                << "codicioso=" << ceGreedyVal << " vs PD=" << ceDPVal << "\n";
+                << "codicioso=" << A.v << " vs PD=" << (B.v + C.v) << "\n";
     }
 }
 
